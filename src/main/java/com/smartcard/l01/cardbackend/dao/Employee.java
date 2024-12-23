@@ -23,10 +23,10 @@ public class Employee {
     private Gender gender;
     @Column(name = "date_of_birth",nullable = false)
     private LocalDate dateOfBirth;
-    @Column(nullable = false,precision = 2)
-    private Double balance;
+    @Column(nullable = false)
+    private Long balance;
 
-    public Employee(String employeeId,String name, Gender gender, LocalDate dateOfBirth, Double balance) {
+    public Employee(String employeeId,String name, Gender gender, LocalDate dateOfBirth, Long balance) {
         this.employeeId = employeeId;
         this.name = name;
         this.gender = gender;

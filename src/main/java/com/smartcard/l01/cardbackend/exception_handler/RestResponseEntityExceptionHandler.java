@@ -11,7 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 public class RestResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception ex, WebRequest request){
-        String body = "custom error message " + ex.getMessage();
+        String body = "Custom error message " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RestResponse(
             HttpStatus.INTERNAL_SERVER_ERROR.toString(), body
         ));
