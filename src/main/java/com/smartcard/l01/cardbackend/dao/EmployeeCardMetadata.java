@@ -19,7 +19,7 @@ public class EmployeeCardMetadata {
     private Employee employee;
     @Column(name = "pin_code",nullable = false,length = 10)
     private String pinCode;
-    @Column(name = "public_key")
+    @Column(name = "public_key",nullable = false,columnDefinition = "text")
     private String publicKey;
     @Column(name = "is_lock",nullable = false)
     private Boolean isLock;

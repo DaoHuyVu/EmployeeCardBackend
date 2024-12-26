@@ -9,13 +9,18 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmployeeCardMetadataRepository extends JpaRepository<EmployeeCardMetadata,Long> {
-    @Query("UPDATE EmployeeCardMetadata ecmd set ecmd.pinCode = :pinCode where ecmd.employee.id = :id")
+    @Query("UPDATE EmployeeCardMetadata ecmd set ecmd.pinCode = :pinCode where ecmd.employee.employeeId = :id")
     @Modifying
     void changePin(@Param("pinCode") String pinCode,@Param("id") Long id);
-    @Query("UPDATE EmployeeCardMetadata ecmd set ecmd.isLock = :isLock where ecmd.employee.id = :id")
+    @Query("UPDATE EmployeeCardMetadata ecmd set ecmd.isLock = :isLock where ecmd.employee.employeeId = :id")
     @Modifying
     void upLockState(@Param("isLock") Boolean isLock,@Param("id") Long id);
-    @Query("UPDATE EmployeeCardMetadata ecmd set ecmd.publicKey = :publicKey where ecmd.employee.id = :id")
+    @Query("UPDATE EmployeeCardMetadata ecmd set ecmd.publicKey = :publicKey where ecmd.employee.employeeId = :id")
     @Modifying
     void changePublicKey(@Param("publicKey") String publicKey,@Param("id") Long id);
+
+    @Query("""
+            SELECT ecmd.publicKey from EmployeeCardMetadata ecmd where ecmd.employee.employeeId = :id
+            """)
+    String findPublicKeyByEId(@Param("id") String id);
 }

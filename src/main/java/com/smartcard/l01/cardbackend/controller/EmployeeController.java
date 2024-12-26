@@ -58,4 +58,10 @@ public class EmployeeController {
         employeeService.updateInfo(fields,employeeId);
         return ResponseEntity.ok().build();
     }
+    @GetMapping(value = "publicKey")
+    public ResponseEntity<?> getPublicKey(
+            @RequestParam("employeeId") String employeeId
+    ){
+        return ResponseEntity.ok().body(employeeService.getPublicKey(employeeId));
+    }
 }

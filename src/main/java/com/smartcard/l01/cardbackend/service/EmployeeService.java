@@ -83,9 +83,6 @@ public class EmployeeService {
             else {
                 field = ReflectionUtils.findField(EmployeeCardMetadata.class,key);
                 if(field != null){
-                    if(field.getType().getCanonicalName().equals(Boolean.class.getCanonicalName())){
-                        employeeCardMetadataRepository.upLockState(Boolean.getBoolean(value),employee.getId());
-                    }
                     if(field.getType().getCanonicalName().equals(String.class.getCanonicalName())){
                         switch (key){
                             case "pinCode":{
@@ -95,6 +92,9 @@ public class EmployeeService {
                             case "publicKey" : {
                                 employeeCardMetadataRepository.changePublicKey(value,employee.getId());
                                 break;
+                            }
+                            case "isLock" : {
+                                employeeCardMetadataRepository.upLockState(Boolean.getBoolean(value),employee.getId());
                             }
                             default:{
                                 throw new RuntimeException("Don't find any string fields that match");
@@ -107,5 +107,8 @@ public class EmployeeService {
             }
         });
         employeeRepository.save(employee);
+    }
+    public String getPublicKey(String employeeId){
+        return employeeCardMetadataRepository.findPublicKeyByEId(employeeId);
     }
 }
