@@ -17,6 +17,7 @@ import javax.imageio.spi.RegisterableService;
 import javax.swing.text.DateFormatter;
 import java.text.DateFormat;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -63,5 +64,33 @@ public class EmployeeController {
             @RequestParam("employeeId") String employeeId
     ){
         return ResponseEntity.ok().body(employeeService.getPublicKey(employeeId));
+    }
+    @PostMapping("/checkIn")
+    public ResponseEntity<?> checkIn(@RequestParam Long employeeId) {
+        employeeService.checkIn(employeeId);
+        return ResponseEntity.ok().body(new RestResponse(
+                HttpStatus.CREATED.toString(),
+                Constants.CHECK_IN_SUCCESSFULLY
+        ));
+    }
+    @PostMapping("/checkOut")
+    public ResponseEntity<?> checkOut(@RequestParam Long employeeId) {
+        employeeService.checkOut(employeeId);
+        return ResponseEntity.ok().body(new RestResponse(
+                HttpStatus.CREATED.toString(),
+                Constants.CHECK_OUT_SUCCESSFULLY
+        ));
+    }
+    @GetMapping("/checkInDates")
+    public ResponseEntity<?> getCheckInDates(@RequestParam Long employeeId) {
+        return ResponseEntity.ok().body(employeeService.getCheckInDates(employeeId));
+    }
+    @GetMapping("/hasActiveSession")
+    public ResponseEntity<?> hasActiveSession(@RequestParam Long employeeId) {
+        boolean hasActiveRecord = employeeService.hasActiveSession(employeeId);
+        return ResponseEntity.ok().body(new RestResponse(
+                HttpStatus.OK.toString(),
+                hasActiveRecord ? "Active Session record exists." : "No active time keeping record."
+        ));
     }
 }
