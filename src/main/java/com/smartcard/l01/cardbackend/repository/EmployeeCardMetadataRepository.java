@@ -22,5 +22,5 @@ public interface EmployeeCardMetadataRepository extends JpaRepository<EmployeeCa
     @Query("""
             SELECT ecmd.publicKey from EmployeeCardMetadata ecmd where ecmd.employee.employeeId = :id
             """)
-    String findPublicKeyByEId(@Param("id") String id);
+    String findPublicKeyByEmployeeId(@Param("id") String id);
 }

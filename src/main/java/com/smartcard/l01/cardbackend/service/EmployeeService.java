@@ -20,7 +20,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -60,8 +59,8 @@ public class EmployeeService {
         return employeeRepository.findLatestEmployeeId();
     }
     @Transactional
-    public void updateInfo(Map<String,String> fields,String employeeId){
-        Employee employee = employeeRepository.findByEmployeeId(employeeId);
+    public void updateInfo(Map<String,String> fields,Long employeeId){
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow();
         fields.forEach((key,value) -> {
             Field field = ReflectionUtils.findField(Employee.class,key);
             if(field != null){
@@ -85,26 +84,28 @@ public class EmployeeService {
                     else
                         ReflectionUtils.setField(field,employee,Gender.FEMALE);
                     }
-                }
+                employeeRepository.save(employee);
+            }
             else {
                 field = ReflectionUtils.findField(EmployeeCardMetadata.class,key);
                 if(field != null){
-                    if(field.getType().getCanonicalName().equals(String.class.getCanonicalName())){
-                        switch (key){
-                            case "pinCode":{
-                                employeeCardMetadataRepository.changePin(value,employee.getId());
-                                break;
-                            }
-                            case "publicKey" : {
-                                employeeCardMetadataRepository.changePublicKey(value,employee.getId());
-                                break;
-                            }
-                            case "isLock" : {
-                                employeeCardMetadataRepository.upLockState(Boolean.getBoolean(value),employee.getId());
-                            }
-                            default:{
-                                throw new RuntimeException("Don't find any string fields that match");
-                            }
+                    switch (key){
+                        case "pinCode":{
+                            System.out.println("Change pinCode to " + value);
+                            employeeCardMetadataRepository.changePin(value,employee.getId());
+                            break;
+                        }
+                        case "publicKey" : {
+                            employeeCardMetadataRepository.changePublicKey(value,employee.getId());
+                            break;
+                        }
+                        case "isLock" : {
+                            System.out.println("Change isLock to " + value);
+                            employeeCardMetadataRepository.upLockState(Boolean.parseBoolean(value),employee.getId());
+                            break;
+                        }
+                        default:{
+                            throw new RuntimeException("Don't find any string fields that match");
                         }
                     }
                 }
@@ -112,10 +113,9 @@ public class EmployeeService {
                     throw new RuntimeException("Field not found");
             }
         });
-        employeeRepository.save(employee);
     }
     public String getPublicKey(String employeeId){
-        return employeeCardMetadataRepository.findPublicKeyByEId(employeeId);
+        return employeeCardMetadataRepository.findPublicKeyByEmployeeId(employeeId);
     }
     @Transactional
     public void checkIn(Long employeeId) {
@@ -162,5 +162,11 @@ public class EmployeeService {
     }
     public boolean hasActiveSession(Long employeeId) {
         return employeeTimeKeepingRepository.existsActiveSessionByEmployeeId(employeeId);
+    }
+    @Transactional
+    public void withdrawal(Long balance,Long employeeId){
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow();
+        employee.setBalance(employee.getBalance() - balance);
+        employeeRepository.save(employee);
     }
 }

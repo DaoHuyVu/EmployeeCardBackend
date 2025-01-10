@@ -53,7 +53,7 @@ public class EmployeeController {
     @PutMapping("")
     public ResponseEntity<?> updateInfo(
             @RequestParam("fields") String f,
-            @RequestParam String employeeId
+            @RequestParam("id") Long employeeId
     ) throws JsonProcessingException {
         Map<String,String> fields = mapper.readValue(f,new TypeReference<>(){});
         employeeService.updateInfo(fields,employeeId);
@@ -92,5 +92,13 @@ public class EmployeeController {
                 HttpStatus.OK.toString(),
                 hasActiveRecord ? "Active Session record exists." : "No active time keeping record."
         ));
+    }
+    @PutMapping("/withdrawal")
+    public ResponseEntity<?> withdrawal(
+            @RequestParam("balance") Long balance,
+            @RequestParam("id") Long id
+    ){
+        employeeService.withdrawal(balance,id);
+        return ResponseEntity.ok().body("Update successfully");
     }
 }

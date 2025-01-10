@@ -13,6 +13,5 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee,Long> {
     @Query(value = "SELECT IFNULL(MAX(e.id),0) from EMPLOYEE e",nativeQuery = true)
     Long findLatestEmployeeId();
-
     Employee findByEmployeeId(String employeeId);
 }
